@@ -6,9 +6,10 @@ const SearchBar = ({ city,setCity, onSearch, onEnter}) => {
                 placeholder="Enter city"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
+                className="input-city"
                 onKeyPress={onEnter}
             />
-            <button onClick={onSearch}>Get Weather</button>
+            <button className="main-button" onClick={onSearch}>Get Weather</button>
         </div>
     );
 };

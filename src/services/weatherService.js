@@ -20,13 +20,21 @@ export async function fetchWeatherByCoords(lat, lon, unit, apiKey) {
   return response.json();
 }
 
-export async function fetchForecastByCoords(lat, lon, unit, apiKey) {
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=${unit}&appid=${apiKey}`
+
+export async function fetchCoordinatesByCity(city, apiKey) {
+  const res = await fetch(
+    `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`
   );
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || 'Failed to fetch forecast');
-  }
-  return response.json();
+  const data = await res.json();
+  if (!res.ok || data.length === 0) throw new Error("City not found");
+  return { lat: data[0].lat, lon: data[0].lon };
+}
+
+export async function fetchForecastByCoords(lat, lon, unit, apiKey) {
+  const res = await fetch(
+    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`
+  );
+  const data = await res.json();
+  if (!res.ok) throw new Error("Failed to fetch forecast");
+  return data;
 }

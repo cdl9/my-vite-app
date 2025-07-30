@@ -1,23 +1,32 @@
-function Forecast({ forecast, unit }) {
-  if (!forecast || !forecast.daily) return null;
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {format, parse} from 'date-fns';
 
+
+function Forecast({ forecast, unit }) {
+
+
+    
+  if (!forecast) return null;
   return (
     <div className="forecast">
-      {forecast.daily.slice(1, 6).map((day, index) => {
-        const date = new Date(day.dt * 1000);
-        const dayName = date.toLocaleDateString(undefined, { weekday: 'short' });
-        return (
-          <div key={index} className="forecast-day">
-            <p>{dayName}</p>
-            <img
-              src={`https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`}
-              alt={day.weather[0].description}
-            />
-            <p>🌡️ {Math.round(day.temp.day)}°{unit === 'metric' ? 'C' : 'F'}</p>
-            <p>💧 {day.humidity}%</p>
-          </div>
-        );
-      })}
+      {forecast.list
+        .filter((_, i) => i % 8 === 0) // Approx. one per day
+        .map(item => (
+          
+          
+            <div key={item.dt} className="forecast-item">
+                <p className="date-forecast"> {format(new Date(item.dt_txt), 'EEE, MMMM do')}</p>
+                <p>{item.weather[0].main}</p>
+                <img
+                    src={`https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`}
+                    alt="Weather icon"
+                />
+                <p><FontAwesomeIcon icon="temperature-half" /> Temp: {Math.round(item.main.temp)}°{unit === 'metric' ? 'C' : 'F'}</p>
+                <p><FontAwesomeIcon icon="droplet" /> Humidity: {item.main.humidity}%</p>
+                <p><FontAwesomeIcon icon="wind" /> Wind: {item.wind.speed} {unit === 'metric' ? 'm/s' : 'mph'}</p>
+
+            </div>
+        ))}
     </div>
   );
 }

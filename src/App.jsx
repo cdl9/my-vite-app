@@ -5,7 +5,16 @@ import WeatherCard from './components/WeatherCard';
 import SearchBar from './components/SearchBar';
 import { useEffect } from 'react';
 import UnitToggle from './components/UnitToggle';
-import { fetchWeatherByCity } from './services/weatherService';
+import { fetchWeatherByCity, fetchCoordinatesByCity, fetchForecastByCoords } from './services/weatherService';
+import Forecast from './components/Forecast';
+
+
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+
+// Add all solid and brand icons to the library
+library.add(fas, fab);
 
 const API_KEY = '5739b15cf015b1daa9e4085470048ca8';
 
@@ -17,7 +26,13 @@ function App() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [unit, setUnit] = useState('metric'); // 'metric' = Celsius, 'imperial' = Fahrenheit
+
   const [forecast, setForecast] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setDarkMode(prev => !prev);
+  }
 
   useEffect(() => {
   if (city) {
@@ -30,6 +45,13 @@ function App() {
     setLoading(true);
     try {
       const data = await fetchWeatherByCity(city, unit, API_KEY);
+      const { lat, lon } = await fetchCoordinatesByCity(city, API_KEY);
+      console.log(`Coordinates for ${city}: Lat: ${lat}, Lon: ${lon}`);
+      
+      const forecastData = await fetchForecastByCoords(lat, lon, unit, API_KEY);
+      console.log(`Forecast for ${city}:`, forecastData);
+      setForecast(forecastData); // ✅ This sets the forecast state
+
       setWeather(data);
       setError('');
     } catch (err) {
@@ -41,43 +63,20 @@ function App() {
 
   
 
-  /*
-  const fetchWeather = async () => {
-    if (!city) return;
-    setLoading(true);
-    try {
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=${unit}`
-      );
-      const data = await res.json();
-      console.log('API response:', data); // 🔍 LOG THE RESPONSE
-
-      if (res.ok) {
-        setWeather(data);
-        setError('');
-      } else {
-        setWeather(null);
-        setError(data.message);
-      }
-    } catch (err) {
-      console.error('Fetch error:', err);
-      setError('Failed to fetch weather');
-      setWeather(null);
-    }
-    setLoading(false);
-  };
-*/
+  
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') fetchWeather();
   };
 
   return (
-    <div className="app">
+    <div className={`app ${darkMode ? 'dark' : 'light'}`}>
+      {/* 🔘 Dark Mode Toggle Button */}
+      <button onClick={toggleDarkMode} className="dark-mode-toggle main-button">
+        {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+      </button>
+
       <h1>🌤️ Weather App</h1>
       <UnitToggle unit={unit} setUnit={setUnit} />
-
-      <GeoLocator unit={unit}/>
-
       <SearchBar
         city={city}
         setCity={setCity}
@@ -85,8 +84,13 @@ function App() {
         onEnter={handleKeyPress}
       />  
 
+      {!weather && <GeoLocator unit={unit}/>}
+
+      
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {weather && <WeatherCard weather={weather} unit={unit} />}
+      {forecast &&<o>5 Days Forecast</o>}
+      {forecast && <Forecast forecast={forecast} unit={unit} />}
 
     </div>
 

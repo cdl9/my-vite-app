@@ -4,14 +4,14 @@ function UnitToggle({ unit, setUnit }) {
   return (
     <div className="unit-toggle">
       <button
-        className={`toggle-button ${unit === 'metric' ? 'selected' : ''}`}
+        className={`main-button toggle-button ${unit === 'metric' ? 'selected' : ''}`}
         onClick={() => setUnit('metric')}
         disabled={unit === 'metric'}
       >
         °C
       </button>
       <button
-        className={`toggle-button ${unit === 'imperial' ? 'selected' : ''}`}
+        className={`main-button toggle-button ${unit === 'imperial' ? 'selected' : ''}`}
         onClick={() => setUnit('imperial')}
         disabled={unit === 'imperial'}
         style={{ marginLeft: '0.5rem' }}

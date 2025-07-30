@@ -3,14 +3,24 @@ import WeatherCard from './WeatherCard';
 import useForecast from '../hooks/useForecast';
 
 import { useEffect } from 'react';
+import Forecast from './Forecast';
 
 const API_KEY = '5739b15cf015b1daa9e4085470048ca8';
 const DEFAULT_CITY = 'New York';
+
+
 
 function GeoLocator({ unit }) {
   const [location, setLocation] = useState(null);
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const { forecast, loading: forecastLoading, error: forecastError } = useForecast({
+  lat: location?.latitude,
+  lon: location?.longitude,
+  unit,
+});
+
 
   useEffect(() => { getWeatherByLocation(); }, []);
   useEffect(() => {
@@ -81,9 +91,13 @@ function GeoLocator({ unit }) {
       {weather ? (
         <WeatherCard weather={weather} unit={unit} />
       ) : null}
+      {forecastError && <p style={{color: 'red'}}>{forecastError}</p>}
       
+      {forecast && <Forecast forecast={forecast} unit={unit} />}
     </div>
   );
 }
 
 export default GeoLocator;
+
+
