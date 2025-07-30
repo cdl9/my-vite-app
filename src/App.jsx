@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import UnitToggle from './components/UnitToggle';
 import { fetchWeatherByCity, fetchCoordinatesByCity, fetchForecastByCoords } from './services/weatherService';
 import Forecast from './components/Forecast';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -70,13 +71,22 @@ function App() {
 
   return (
     <div className={`app ${darkMode ? 'dark' : 'light'}`}>
-      {/* 🔘 Dark Mode Toggle Button */}
-      <button onClick={toggleDarkMode} className="dark-mode-toggle main-button">
-        {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-      </button>
+
+      <div className="toggle-wrapper">
+        <label className="toggle-label">
+            <FontAwesomeIcon icon="sun" />
+            <input type="checkbox" 
+                   id="theme-toggle" 
+                   onChange={toggleDarkMode}
+            />
+            <span className="slider"></span>
+            <FontAwesomeIcon icon="moon" />
+            
+        </label>
+      </div>
+      <UnitToggle unit={unit} setUnit={setUnit} />
 
       <h1>🌤️ Weather App</h1>
-      <UnitToggle unit={unit} setUnit={setUnit} />
       <SearchBar
         city={city}
         setCity={setCity}
@@ -89,7 +99,6 @@ function App() {
       
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {weather && <WeatherCard weather={weather} unit={unit} />}
-      {forecast &&<o>5 Days Forecast</o>}
       {forecast && <Forecast forecast={forecast} unit={unit} />}
 
     </div>

@@ -11,7 +11,6 @@
   font-family: Arial, sans-serif;
   text-align: center;
   padding: 2rem;
-  //width: calc(100vw - 4rem);
 }
 
 
@@ -76,6 +75,7 @@ button:hover {
   color: var(--lila-accent);
   margin-top: 0.5rem;
 }
+
 .feature-details {
   display: flex;
   align-items: center;
@@ -128,13 +128,30 @@ img.weather-icon {
 .temperature-details,.weather-header, .extra-details {
   margin: 3rem;
 }
-.forecast{
+.forecast, .hourly-items{
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
+  justify-content: center;
+  
 }
 .forecast-item {
-   padding: 0.5rem; 
+  padding: 0.5rem; 
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+}
+
+.hourly-item{
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hourly-item:hover, .forecast-item:hover{
+  background-color: var(--lila-accent);
+  color: white;
+  border-radius: 8px;
+  transform: translateY(-5px);
+}
+.forecast-item:hover .date-forecast {
+  color: white; /* specifically override the purple on hover */
 }
 .mediumIcon {
   font-size: 1.5rem;
@@ -168,7 +185,7 @@ img.weather-icon {
 .weather-info {
   margin-top: 2rem;
 }
-.weather-card, .forecast-item{
+.weather-card, .forecast-item, .hourly-items{
   background-color: var(--card-bg);
   color: var(--text-color);
   padding: 1rem;
@@ -191,4 +208,54 @@ img.weather-icon {
   border-radius: 5px;
   cursor: pointer;
   font-size: 1rem;
+}
+
+
+.toggle-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color:var(--text-color)
+}
+
+.toggle-label input {
+  display: none;
+}
+
+.toggle-label .slider {
+  width: 50px;
+  height: 26px;
+  background: var(--card-bg);
+  border-radius: 20px;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.toggle-label .slider::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background: var(--lila-accent);
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.3s ease;
+}
+
+#theme-toggle:checked + .slider::before {
+  transform: translateX(24px);
+}
+.unit-label {
+  font-size: 1.25em;
+  font-weight: bold;
+  color: var(--text-color);
 }
