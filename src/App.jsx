@@ -5,7 +5,7 @@ import WeatherCard from './components/WeatherCard';
 import SearchBar from './components/SearchBar';
 import { useEffect } from 'react';
 import UnitToggle from './components/UnitToggle';
-import { fetchWeatherByCity, fetchCoordinatesByCity, fetchForecastByCoords } from './services/weatherService';
+import { fetchWeather as fetchWeatherService, fetchForecastByCoords } from './services/weatherService';
 import Forecast from './components/Forecast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -41,23 +41,36 @@ function App() {
   }
   }, [unit]);
 
-  const fetchWeather = async () => {
-    if (!city) return;
+  const fetchWeather = async (coords) => {
+    if (!city && !coords) return;
     setLoading(true);
     try {
-      const data = await fetchWeatherByCity(city, unit, API_KEY);
-      const { lat, lon } = await fetchCoordinatesByCity(city, API_KEY);
-      console.log(`Coordinates for ${city}: Lat: ${lat}, Lon: ${lon}`);
       
-      const forecastData = await fetchForecastByCoords(lat, lon, unit, API_KEY);
-      console.log(`Forecast for ${city}:`, forecastData);
+      const weatherData = await fetchWeatherService({
+        city: coords ? null : city,
+        lat: coords?.lat,
+        lon: coords?.lon,
+        unit,
+        apiKey: API_KEY
+      });
+      console.log("coords:", coords);
+      console.log("Weather data:", weatherData);
+      setWeather(weatherData);
+      
+      const forecastData = await fetchForecastByCoords(
+        coords?.lat || weatherData.coord?.lat,
+        coords?.lon || weatherData.coord?.lon,
+        unit, API_KEY
+      );
+      console.log(`Forecast data:`, forecastData);
       setForecast(forecastData); // ✅ This sets the forecast state
 
-      setWeather(data);
+      //setWeather(data);
       setError('');
     } catch (err) {
       setError(err.message);
       setWeather(null);
+      setForecast(null);
     }
     setLoading(false);
   };
@@ -92,6 +105,7 @@ function App() {
         setCity={setCity}
         onSearch={fetchWeather}
         onEnter={handleKeyPress}
+        API_KEY={API_KEY}
       />  
 
       {!weather && <GeoLocator unit={unit}/>}

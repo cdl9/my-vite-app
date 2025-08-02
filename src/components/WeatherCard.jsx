@@ -1,11 +1,39 @@
 // src/components/WeatherCard.jsx
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useEffect, useState } from 'react';
+import { format, set } from 'date-fns';
 
 const WeatherCard = ({ weather, unit }) => {
-  
+  const [localTime, setLocalTime] = useState('');
+  const [localDate, setLocalDate] = useState('');
   if (!weather) return null;
 
+  const updateLocalTime = () => {
+      const nowUTC = Math.floor(Date.now() / 1000) + (new Date().getTimezoneOffset() * 60); // current UTC time in seconds
+      const localTimestamp = nowUTC + weather.timezone; // add timezone offset
+      const localDate = new Date(localTimestamp * 1000);
 
+      setLocalTime(format(localDate, 'h:mm a'));
+      setLocalDate(format(localDate, 'EEEE, MMMM do'));
+    };
+
+  useEffect(() => {
+    updateLocalTime(); // initial calculation
+
+    const timer = setInterval(() => {
+      updateLocalTime(); // update every minute
+    }, 60000);
+
+    return () => clearInterval(timer); // cleanup on unmount
+  }, [weather.timezone]);
+/*
+  const date = new Date((weather.dt + weather.timezone) * 1000);
+  const formattedDate = date.toLocaleDateString('en-US', {
+    weekday: 'short', // e.g., "Friday"
+    month: 'long',   // e.g., "August"
+    day: 'numeric'   // e.g., "2"
+  });*/
+  
   const formatTime = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleTimeString('en-US', {
     hour: '2-digit',
@@ -19,6 +47,8 @@ const WeatherCard = ({ weather, unit }) => {
     <div className="weather-card">
       <div className="weather-header">
         <h2>{weather.name}, {weather.sys.country}</h2>
+        <p>{localDate}</p>
+        <p>Local Time: {localTime}</p>
         <img
           src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
           alt="Weather icon"
@@ -51,9 +81,28 @@ const WeatherCard = ({ weather, unit }) => {
 
 
       <div className="extra-details">
-        <p><FontAwesomeIcon icon="droplet" /> Humidity: {weather.main.humidity}%</p>
-        <p><FontAwesomeIcon icon="wind" /> Wind: {weather.wind.speed} {unit === 'metric' ? 'm/s' : 'mph'}</p>
-        <p><FontAwesomeIcon icon="tachometer-alt" /> Pressure: {weather.main.pressure}Pa</p>
+        <div className="feature-text full-width"> 
+            <div className='center-parent-flex'>
+              <FontAwesomeIcon icon="droplet"/> 
+              <p style={{ margin:'0.5rem'}}>Humidity</p>
+            </div>
+            <p>{weather.main.humidity}%</p>
+        </div>
+        <div className="feature-text full-width"> 
+            <div className='center-parent-flex'>
+              <FontAwesomeIcon icon="wind"/> 
+              <p style={{ margin:'0.5rem'}}>Wind</p>
+            </div>
+            <p> {weather.wind.speed}{unit === 'metric' ? 'm/s' : 'mph'}</p>
+        </div>
+        <div className="feature-text full-width"> 
+            <div className='center-parent-flex'>
+              <FontAwesomeIcon icon="tachometer-alt"/> 
+              <p style={{ margin:'0.5rem'}}>Pressure</p>
+            </div>
+            <p> {weather.main.pressure}Pa</p>
+        </div>
+
       </div>
     </div>
   );

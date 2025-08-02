@@ -12,7 +12,7 @@ function useForecast({ lat, lon, unit }) {
 
     setLoading(true);
     setError('');
-    
+    console
     fetch(
       `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${unit}`
     )

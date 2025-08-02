@@ -9,14 +9,14 @@ function UnitToggle({ unit, setUnit }) {
     <div className="unit-toggle">   
       <div className="toggle-wrapper">
               <label className="toggle-label">
-                  <p className="unit-label">°C</p>
+                  <span className="unit-label"  >°C</span>
                   <input type="checkbox" 
                          id="theme-toggle" 
                          onChange={toggleDegrees}
                          checked={unit === 'imperial'}
                   />
                   <span className="slider"></span>
-                  <p className="unit-label">°F</p>         
+                  <span className="unit-label">°F</span>         
               </label>
       </div>
     </div>

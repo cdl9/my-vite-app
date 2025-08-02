@@ -5,24 +5,27 @@ import { format, isToday, parse, parseISO } from 'date-fns';
 
 
 function Forecast({ forecast, unit }) {
-  
-  const todayForecast = forecast.list
-    .filter(item => isToday(parseISO(item.dt_txt))) // only today's entries
-    .slice(0, 6); // limit to first 6 hours (~18 hours ahead)
+  if (!forecast || !forecast.list) return null;
 
-    
-  if (!forecast) return null;
+  const todayStr = new Date().toISOString().split('T')[0];
+const firstDate = forecast.list[0].dt_txt.split(' ')[0];
+
+const hourlyForecast = forecast.list
+  .slice(0, 6);
+
   return (
     <div>
       <div className="hourly-forecast">
           <h3>Hourly Forecast</h3>
           <div className="hourly-items">
-            {todayForecast.map(item => (
+            {hourlyForecast.map(item => (
               <div key={item.dt} className="hourly-item">
                 <p>{format(parseISO(item.dt_txt), 'h a')}</p>
                 <img
                   src={`https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`}
                   alt="Weather icon"
+                  className='hourly-weather-icon'
+
                 />
                 <p>{Math.round(item.main.temp)}°{unit === 'metric' ? 'C' : 'F'}</p>
               </div>
@@ -46,7 +49,7 @@ function Forecast({ forecast, unit }) {
                   />
                   <p><FontAwesomeIcon icon="temperature-half" /> Temp: {Math.round(item.main.temp)}°{unit === 'metric' ? 'C' : 'F'}</p>
                   <p><FontAwesomeIcon icon="droplet" /> Humidity: {item.main.humidity}%</p>
-                  <p><FontAwesomeIcon icon="wind" /> Wind: {item.wind.speed} {unit === 'metric' ? 'm/s' : 'mph'}</p>
+                  <p><FontAwesomeIcon icon="wind" /> Wind: <span className="numberValue">{item.wind.speed} {unit === 'metric' ? 'm/s' : 'mph'}</span></p>
 
               </div>
           ))}
