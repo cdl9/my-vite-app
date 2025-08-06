@@ -5,6 +5,7 @@ import WeatherCard from './components/WeatherCard';
 import SearchBar from './components/SearchBar';
 import { useEffect } from 'react';
 import UnitToggle from './components/UnitToggle';
+import DarkModeToggle from './components/DarkModeToggle';
 import { fetchWeather as fetchWeatherService, fetchForecastByCoords } from './services/weatherService';
 import Forecast from './components/Forecast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -50,7 +51,7 @@ function App() {
 
   const [forecast, setForecast] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
-  const [backgroundClass, setBackgroundClass] =useState('bg-squall');
+  const [backgroundClass, setBackgroundClass] =useState('bg-default');
 
   const toggleDarkMode = () => {
     setDarkMode(prev => !prev);
@@ -114,29 +115,18 @@ function App() {
     <div className={`app-container ${backgroundClass}`}>
     <div className={`app ${darkMode ? 'dark' : 'light'} `}>
 
-      <div className="toggle-wrapper">
-        <label className="toggle-label">
-            <FontAwesomeIcon icon="sun" />
-            <input type="checkbox" 
-                   id="theme-toggle" 
-                   onChange={toggleDarkMode}
-            />
-            <span className="slider"></span>
-            <FontAwesomeIcon icon="moon" />
-            
-        </label>
-      </div>
+      <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode}/>
       <UnitToggle unit={unit} setUnit={setUnit} />
-
-      <h1>🌤️ Weather App</h1>
-      <SearchBar
-        city={city}
-        setCity={setCity}
-        onSearch={fetchWeather}
-        onEnter={handleKeyPress}
-        API_KEY={API_KEY}
-      />  
-
+      <div className='header-container'>
+        <h1>🌤️ Weather App</h1>
+        <SearchBar
+          city={city}
+          setCity={setCity}
+          onSearch={fetchWeather}
+          onEnter={handleKeyPress}
+          API_KEY={API_KEY}
+        />  
+      </div>
       {!weather && <GeoLocator unit={unit}/>}
 
       
