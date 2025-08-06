@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react";
 function SearchBar({ city, setCity, onSearch, onEnter, API_KEY }) {
   const [suggestions, setSuggestions] = useState([]);
   const [typingTimeout, setTypingTimeout] = useState(null);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const [tempInput, setTempInput] = useState(""); // for preview
   const wrapperRef = useRef(null); // 👈 ref for detecting outside click
 
   // Fetch city suggestions
@@ -28,6 +30,8 @@ function SearchBar({ city, setCity, onSearch, onEnter, API_KEY }) {
   const handleChange = (e) => {
     const value = e.target.value;
     setCity(value);
+    setTempInput("");
+    setHighlightedIndex(-1);
 
     if (typingTimeout) clearTimeout(typingTimeout);
     setTypingTimeout(
@@ -41,18 +45,60 @@ function SearchBar({ city, setCity, onSearch, onEnter, API_KEY }) {
   const handleSelectSuggestion = (selectedCity) => {
     setCity(`${selectedCity.name}, ${selectedCity.country} ${selectedCity.state ? `(${selectedCity.state})` : ""}`);
     setSuggestions([]);
+    setHighlightedIndex(-1);
+    setTempInput("");
     onSearch({
         lat: selectedCity.lat,
         lon: selectedCity.lon
     }); // Trigger weather fetch
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "ArrowDown") {
+      if (suggestions.length === 0) return;
+      e.preventDefault();
+      setHighlightedIndex((prev) => {
+        const nextIndex =
+          prev < suggestions.length - 1 ? prev + 1 : 0;
+        setTempInput(
+          `${suggestions[nextIndex].name}, ${suggestions[nextIndex].country}${
+            suggestions[nextIndex].state ? ` (${suggestions[nextIndex].state})` : ""
+          }`
+        );
+        return nextIndex;
+      });
+    } else if (e.key === "ArrowUp") {
+        if (suggestions.length === 0) return;
+        e.preventDefault();
+        setHighlightedIndex((prev) => {
+            const nextIndex =
+            prev > 0 ? prev - 1 : suggestions.length - 1;
+            setTempInput(
+            `${suggestions[nextIndex].name}, ${suggestions[nextIndex].country}${
+                suggestions[nextIndex].state ? ` (${suggestions[nextIndex].state})` : ""
+            }`
+            );
+            return nextIndex;
+        });
+    } else if (e.key === "Enter") {
+      if (highlightedIndex >= 0 && suggestions[highlightedIndex]) {
+        handleSelectSuggestion(suggestions[highlightedIndex]);
+      } else {
+        onEnter(e);
+      }
+    } else if (e.key === "Escape") {
+      setSuggestions([]);
+      setHighlightedIndex(-1);
+      setTempInput("");
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-        console.log("click");
-
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         setSuggestions([]);
+        setHighlightedIndex(-1);
+        setTempInput("");
         console.log("Suggestions clear");
       }
     };
@@ -63,7 +109,7 @@ function SearchBar({ city, setCity, onSearch, onEnter, API_KEY }) {
 
     };
   }, []);
-
+/*
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       setSuggestions([]);
@@ -71,9 +117,12 @@ function SearchBar({ city, setCity, onSearch, onEnter, API_KEY }) {
     }
   };
 
-
-
-
+*/
+    const handleFocus = () => {
+        setCity("");        // clear the text
+        setSuggestions([]); // clear old suggestions
+    };
+    
 
 
     return (
@@ -82,9 +131,15 @@ function SearchBar({ city, setCity, onSearch, onEnter, API_KEY }) {
                 <input
                     type="text"
                     placeholder="Enter city"
-                    value={city}
+                    value={tempInput || city}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
+                    onFocus={handleFocus}
+                    onMouseDown={(e) => {
+                        if (city) {
+                            setCity("");
+                        }
+                        }}
                     className="input-city"
                 />
                 {suggestions.length > 0 && (
@@ -92,7 +147,9 @@ function SearchBar({ city, setCity, onSearch, onEnter, API_KEY }) {
                 {suggestions.map((s, i) => (
                     <li
                     key={i}
-                    className="suggestion-item"
+                    className={`suggestion-item ${
+                  highlightedIndex === i ? "highlighted" : ""
+                }`}
                     onClick={() => handleSelectSuggestion(s)}
                     >
                     {s.name}, {s.country} {s.state ? `(${s.state})` : ""}

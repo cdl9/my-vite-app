@@ -14,6 +14,26 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 
+const weatherBackgrounds = {
+  Clear: 'bg-clear',
+  Rain: 'bg-rain',
+  Clouds: 'bg-clouds',
+  Snow: 'bg-snow',
+  Thunderstorm: 'bg-thunderstorm',
+  Drizzle: 'bg-drizzle',
+  Mist: 'bg-mist',
+  Haze: 'bg-haze',
+  Smoke: 'bg-smoke',
+  Fog: 'bg-fog',
+  Dust: 'bg-dust',
+  Sand: 'bg-sand',
+  Ash: 'bg-ash',
+  Squall: 'bg-squall',
+  Tornado: 'bg-tornado'
+}
+
+
+
 // Add all solid and brand icons to the library
 library.add(fas, fab);
 
@@ -30,6 +50,7 @@ function App() {
 
   const [forecast, setForecast] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [backgroundClass, setBackgroundClass] =useState('bg-squall');
 
   const toggleDarkMode = () => {
     setDarkMode(prev => !prev);
@@ -65,6 +86,13 @@ function App() {
       console.log(`Forecast data:`, forecastData);
       setForecast(forecastData); // ✅ This sets the forecast state
 
+      const weatherType = weatherData?.weather?.[0]?.main;
+      console.log(weatherType);
+
+      const backgroundClass = weatherBackgrounds[weatherType] || 'bg-default';
+      setBackgroundClass(backgroundClass); // 👈 use a new state for this
+      console.log(backgroundClass);
+
       //setWeather(data);
       setError('');
     } catch (err) {
@@ -83,7 +111,8 @@ function App() {
   };
 
   return (
-    <div className={`app ${darkMode ? 'dark' : 'light'}`}>
+    <div className={`app-container ${backgroundClass}`}>
+    <div className={`app ${darkMode ? 'dark' : 'light'} `}>
 
       <div className="toggle-wrapper">
         <label className="toggle-label">
@@ -116,7 +145,7 @@ function App() {
       {forecast && <Forecast forecast={forecast} unit={unit} />}
 
     </div>
-
+    </div>
   );
 }
 
