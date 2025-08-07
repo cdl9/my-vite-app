@@ -46,8 +46,9 @@ function App() {
   const [city, setCity] = useState('');
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [unit, setUnit] = useState('metric'); // 'metric' = Celsius, 'imperial' = Fahrenheit
+  const [visibility, setVisibility] = useState('hidden');
 
   const [forecast, setForecast] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
@@ -65,6 +66,7 @@ function App() {
 
   const fetchWeather = async (coords) => {
     if (!city && !coords) return;
+
     setLoading(true);
     try {
       
@@ -93,7 +95,7 @@ function App() {
       const backgroundClass = weatherBackgrounds[weatherType] || 'bg-default';
       setBackgroundClass(backgroundClass); // 👈 use a new state for this
       console.log(backgroundClass);
-
+      setVisibility('visible');
       //setWeather(data);
       setError('');
     } catch (err) {
@@ -111,10 +113,12 @@ function App() {
     if (e.key === 'Enter') fetchWeather();
   };
 
-  return (
-    <div className={`app-container ${backgroundClass}`}>
-    <div className={`app ${darkMode ? 'dark' : 'light'} `}>
 
+  return (
+    
+    <div className={`app-container ${backgroundClass}`} style={{visibility: `${visibility}`}}> 
+      
+    <div className={`app ${darkMode ? 'dark' : 'light'} `}>
       <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode}/>
       <UnitToggle unit={unit} setUnit={setUnit} />
       <div className='header-container'>
@@ -126,8 +130,10 @@ function App() {
           onEnter={handleKeyPress}
           API_KEY={API_KEY}
         />  
+
       </div>
-      {!weather && <GeoLocator unit={unit}/>}
+
+      {!weather && <GeoLocator onCoords={fetchWeather} unit={unit} setVisibility={setVisibility}/>}
 
       
       {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -135,6 +141,7 @@ function App() {
       {forecast && <Forecast forecast={forecast} unit={unit} />}
 
     </div>
+
     </div>
   );
 }

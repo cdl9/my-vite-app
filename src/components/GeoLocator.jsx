@@ -10,7 +10,7 @@ const DEFAULT_CITY = 'New York';
 
 
 
-function GeoLocator({ unit }) {
+function GeoLocator({ onCoords, unit}) {
   const [location, setLocation] = useState(null);
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -34,7 +34,6 @@ function GeoLocator({ unit }) {
     if (navigator.geolocation) {
       setLoading(true);
       navigator.geolocation.getCurrentPosition(success, error);
-
       
     } else {
       console.log("Geolocation not supported");
@@ -45,8 +44,14 @@ function GeoLocator({ unit }) {
   function success(position) {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
+    const coords = {
+      lat: position.coords.latitude,
+      lon: position.coords.longitude,
+    };
     setLocation({ latitude, longitude });
     console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+    onCoords(coords);
+
   };
 
   const fetchWeather = (lat,lon)  => {
@@ -58,6 +63,7 @@ function GeoLocator({ unit }) {
         setWeather(data);
         setLoading(false);
         console.log(data);
+
       })
       .catch(error => {
         console.log(error);
@@ -91,6 +97,7 @@ function GeoLocator({ unit }) {
       {weather ? (
         <WeatherCard weather={weather} unit={unit} />
       ) : null}
+      
       {forecastError && <p style={{color: 'red'}}>{forecastError}</p>}
       
       {forecast && <Forecast forecast={forecast} unit={unit} />}
@@ -99,5 +106,3 @@ function GeoLocator({ unit }) {
 }
 
 export default GeoLocator;
-
-

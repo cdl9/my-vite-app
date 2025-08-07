@@ -35,7 +35,6 @@ html:has(.app.dark) {
 
 
 .app.light {
-  //background-color: #f5f5f5;
   background-color: transparent;
   --bk-color: #f5f5f5;
   --light-bk-color: #ffffff;
@@ -44,7 +43,6 @@ html:has(.app.dark) {
 }
 
 .app.dark {
-  //background-color: #242424;
   background-color: transparent;
   --bk-color:#242424;
   --light-bk-color: #3e3e3e;
@@ -278,12 +276,7 @@ img.weather-icon {
   align-items: center;
   justify-content: center;
 }
-.weather-card:hover{
-  background-color: var(--lila-accent);
-  color: white;
-  border-radius: 8px;
-  transform: translateY(-5px);
-}
+
 .dark-mode-toggle {
   display:flex;
   justify-self: end;
