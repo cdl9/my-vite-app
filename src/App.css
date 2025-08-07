@@ -36,7 +36,7 @@ html:has(.app.dark) {
 
 .app.light {
   background-color: transparent;
-  --bk-color: #f5f5f5;
+  --bk-color: #ffffff;
   --light-bk-color: #ffffff;
   --text-color: #222;
   --card-bg: rgba(245, 245, 245, 0.8);
@@ -74,7 +74,9 @@ h3{
   background-color: var(--orange-accent);
   border-color: var(--orange-accent);
 }
-
+.modal-details{
+  margin-bottom: 0;
+}
 input {
   padding: 0.5rem;
   font-size: 1rem;
@@ -239,7 +241,6 @@ img.weather-icon {
   background-color: transparent;
   padding: 1rem;
   border-radius: 15px;
-  //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin: 1rem auto;
 }
 .temperatureBig {
@@ -261,7 +262,7 @@ img.weather-icon {
 .weather-info {
   margin-top: 2rem;
 }
-.weather-card, .forecast-item, .hourly-items, .header-container{
+.weather-card, .forecast-item, .hourly-items, .header-container, .modal-forecast{
   background-color: var(--card-bg);
   color: var(--text-color);
   padding: 1rem;
@@ -271,12 +272,38 @@ img.weather-icon {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
 }
-.weather-card{
+.weather-card,.modal-forecast{
   display: flex;
   align-items: center;
   justify-content: center;
 }
+.modal-forecast{
+  position: fixed;
+  background-color: var(--bk-color);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 3rem 3rem;
 
+}
+/*
+.modal-forecast:hover{
+  background-color: var(--lila-accent);
+  color: white;
+}
+*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+}
 .dark-mode-toggle {
   display:flex;
   justify-self: end;
