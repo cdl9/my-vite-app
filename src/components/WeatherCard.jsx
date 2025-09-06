@@ -6,6 +6,11 @@ import { format, set } from 'date-fns';
 const WeatherCard = ({ weather, unit }) => {
   const [localTime, setLocalTime] = useState('');
   const [localDate, setLocalDate] = useState('');
+
+  const [fade, setFade] = useState('fade-in'); 
+  const [displayTemp, setDisplayTemp] = useState(null);
+
+  
   if (!weather) return null;
 
   const updateLocalTime = () => {
@@ -26,14 +31,9 @@ const WeatherCard = ({ weather, unit }) => {
 
     return () => clearInterval(timer); // cleanup on unmount
   }, [weather.timezone]);
-/*
-  const date = new Date((weather.dt + weather.timezone) * 1000);
-  const formattedDate = date.toLocaleDateString('en-US', {
-    weekday: 'short', // e.g., "Friday"
-    month: 'long',   // e.g., "August"
-    day: 'numeric'   // e.g., "2"
-  });*/
-  
+
+
+
   const formatTime = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleTimeString('en-US', {
     hour: '2-digit',
@@ -58,7 +58,7 @@ const WeatherCard = ({ weather, unit }) => {
       </div>
 
       <div className="temperature-details"> 
-        <p className="temperatureBig">{weather.main.temp}°{unit === 'metric' ? 'C' : 'F'}</p>
+        <p className={`temperatureBig temp-value ${fade}`}>{weather.main.temp}°{unit === 'metric' ? 'C' : 'F'}</p>
         <p><FontAwesomeIcon icon="temperature-half" /> Feels like {weather.main.feels_like}°{unit === 'metric' ? 'C' : 'F'}</p>
         <div className="feature-details">
           <FontAwesomeIcon icon="sun" className="mediumIcon"/>

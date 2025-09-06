@@ -22,7 +22,7 @@ function GeoLocator({ onCoords, unit}) {
 });
 
 
-  useEffect(() => { getWeatherByLocation(); }, []);
+  useEffect(() => { getWeatherByLocation(); }, [unit]);
   useEffect(() => {
   if (location) {
     fetchWeather(location.latitude, location.longitude);
@@ -57,8 +57,7 @@ function GeoLocator({ onCoords, unit}) {
   const fetchWeather = (lat,lon)  => {
     setLoading(true);
     // Make API call to OpenWeatherMap
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${unit}`)
-      .then(response => response.json())
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${unit}`)      .then(response => response.json())
       .then(data => {
         setWeather(data);
         setLoading(false);

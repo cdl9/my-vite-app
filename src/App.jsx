@@ -59,8 +59,11 @@ function App() {
   }
 
   useEffect(() => {
-  if (city) {
-    fetchWeather();
+  if (weather) {
+    fetchWeather({
+      lat: weather.coord?.lat,
+      lon: weather.coord?.lon
+    });
   }
   }, [unit]);
 
@@ -77,8 +80,7 @@ function App() {
         unit,
         apiKey: API_KEY
       });
-      console.log("coords:", coords);
-      console.log("Weather data:", weatherData);
+
       setWeather(weatherData);
       
       const forecastData = await fetchForecastByCoords(
@@ -86,12 +88,10 @@ function App() {
         coords?.lon || weatherData.coord?.lon,
         unit, API_KEY
       );
-      console.log(`Forecast data:`, forecastData);
+
       setForecast(forecastData); // ✅ This sets the forecast state
 
       const weatherType = weatherData?.weather?.[0]?.main;
-      console.log(weatherType);
-
       const backgroundClass = weatherBackgrounds[weatherType] || 'bg-default';
       setBackgroundClass(backgroundClass); // 👈 use a new state for this
       console.log(backgroundClass);
