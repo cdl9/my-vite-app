@@ -9,7 +9,7 @@ import DarkModeToggle from './components/DarkModeToggle';
 import { fetchWeather as fetchWeatherService, fetchForecastByCoords } from './services/weatherService';
 import Forecast from './components/Forecast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import WeatherMap from './components/WeatherMap';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -44,6 +44,7 @@ const API_KEY = '5739b15cf015b1daa9e4085470048ca8';
 
 function App() {
   const [city, setCity] = useState('');
+  const [cityLabel, setCityLabel] = useState('');
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -66,9 +67,14 @@ function App() {
     });
   }
   }, [unit]);
+  
 
   const fetchWeather = async (coords) => {
-    if (!city && !coords) return;
+    if (!city && !coords) {
+      setWeather(null);
+      setForecast(null);
+      return;
+    }
 
     setLoading(true);
     try {
@@ -82,11 +88,14 @@ function App() {
       });
 
       setWeather(weatherData);
+      if(!weather&&!city)
+        setCityLabel(`${weatherData.name}, ${weatherData.sys.country}`)
       
       const forecastData = await fetchForecastByCoords(
         coords?.lat || weatherData.coord?.lat,
         coords?.lon || weatherData.coord?.lon,
-        unit, API_KEY
+        unit, API_KEY,
+
       );
 
       setForecast(forecastData); // ✅ This sets the forecast state
@@ -94,7 +103,6 @@ function App() {
       const weatherType = weatherData?.weather?.[0]?.main;
       const backgroundClass = weatherBackgrounds[weatherType] || 'bg-default';
       setBackgroundClass(backgroundClass); // 👈 use a new state for this
-      console.log(backgroundClass);
       setVisibility('visible');
       //setWeather(data);
       setError('');
@@ -119,27 +127,36 @@ function App() {
     <div className={`app-container ${backgroundClass}`} style={{visibility: `${visibility}`}}> 
       
     <div className={`app ${darkMode ? 'dark' : 'light'} `}>
-      <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode}/>
-      <UnitToggle unit={unit} setUnit={setUnit} />
-      <div className='header-container'>
-        <h1>🌤️ Weather App</h1>
+       
+      <div className='header-container'  style={{display:'flex', flexDirection:'row', alignContent:'center', alignItems:'center', justifyContent:'space-between'}}>
+        <h2 style={{padding:'0px 20px'}}>WeatherApp</h2>
         <SearchBar
-          city={city}
-          setCity={setCity}
-          onSearch={fetchWeather}
-          onEnter={handleKeyPress}
-          API_KEY={API_KEY}
-        />  
-
+            city={city}
+            setCity={setCity}
+            onSearch={fetchWeather}
+            onEnter={handleKeyPress}
+            setCityLabel={setCityLabel}
+            API_KEY={API_KEY}
+          /> 
+        <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode}/>
+        <UnitToggle unit={unit} setUnit={setUnit} />    
       </div>
 
       {!weather && <GeoLocator onCoords={fetchWeather} unit={unit} setVisibility={setVisibility}/>}
 
       
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      {weather && <WeatherCard weather={weather} unit={unit} />}
+      {weather && <WeatherCard weather={weather} unit={unit} cityLabel={cityLabel} />}
       {forecast && <Forecast forecast={forecast} unit={unit} />}
 
+      {forecast&&
+        <WeatherMap
+          lat={forecast.city.coord.lat}
+          lon={forecast.city.coord.lon}
+          city={forecast.city.name}
+          temp={Math.round(forecast.list[0].main.temp)}
+          unit={unit}
+        />}
     </div>
 
     </div>

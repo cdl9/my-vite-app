@@ -6,7 +6,7 @@ function ForecastHour({ item, unit, onClick}) {
   if (!item) return null;
   return (
               <div key={item.dt} className="hourly-item" onClick={onClick}>
-                <p>{format(parseISO(item.dt_txt), 'h a')}</p>
+                <p>{item.localHour}</p>
                 <img
                   src={`https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`}
                   alt="Weather icon"

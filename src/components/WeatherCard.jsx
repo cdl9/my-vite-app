@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
 import { format, set } from 'date-fns';
 
-const WeatherCard = ({ weather, unit }) => {
+const WeatherCard = ({ weather, unit, cityLabel }) => {
   const [localTime, setLocalTime] = useState('');
   const [localDate, setLocalDate] = useState('');
 
@@ -46,7 +46,7 @@ const WeatherCard = ({ weather, unit }) => {
   return (
     <div className="weather-card">
       <div className="weather-header">
-        <h2>{weather.name}, {weather.sys.country}</h2>
+        <h2>{cityLabel}</h2>
         <p>{localDate}</p>
         <p>Local Time: {localTime}</p>
         <img

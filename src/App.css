@@ -39,15 +39,15 @@ html:has(.app.dark) {
   --bk-color: #ffffff;
   --light-bk-color: #ffffff;
   --text-color: #222;
-  --card-bg: rgba(245, 245, 245, 0.8);
+  --card-bg: rgba(234, 234, 234, 0.8);
   --border-color: rgba(24, 24, 24, 0.2);
   --overlay-bg:rgba(0, 0, 0, 0.8)
 }
 
 .app.dark {
   background-color: transparent;
-  --bk-color:#242424;
-  --light-bk-color: #3e3e3e;
+  --bk-color:#313131;
+  --light-bk-color: gray;
   --text-color: white;
   --card-bg: rgba(26, 26, 26, 0.8);
   --border-color: rgba(245, 245, 245, 0.4);
@@ -65,27 +65,25 @@ h3{
   color: var(--text-color);
 }
 .main-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  position: absolute;
+  right: 0px;
+  border: none;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: var(--lila-accent);
-  color: white;
+  background-color: transparent;
+  color: var(--text-color);
   cursor: pointer;
 }
 .main-button:hover {
-  background-color: var(--orange-accent);
-  border-color: var(--orange-accent);
+  background-color: transparent;
+  border-color: transparent;
 }
 .modal-details{
   margin-bottom: 0;
 }
 input {
-  padding: 0.5rem;
   font-size: 1rem;
-  margin-right: 0.5rem;
 }
 
 button {
@@ -104,7 +102,11 @@ button:hover {
   color: var(--lila-accent);
   margin-top: 0.5rem;
 }
-
+.date-selector {
+  background-color: var(--card-bg);
+  border-radius: 20px;
+  padding: 0.2rem;
+}
 .feature-details {
   display: flex;
   align-items: center;
@@ -145,15 +147,24 @@ img.weather-icon {
 .hourly-item > p{
   margin: 0;
 }
+.hourly-weather-icon {
+  width: 100px;
+  height: 100px;
+}
 .input-city {
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   font-size: 1rem;
-  border: 1px solid var(--text-color);
+  border: none;
   background-color: var(--bk-color);
   color: var(--text-color);
-  border-radius: 4px;
-  width: 200px;
+  border-radius: 20px;
+  width: 100%;
   box-sizing: border-box; /* ensures width includes border + padding */
+}
+.wrapper-input {
+  border-radius: 20px;
+  border:1px solid rgba(0, 0, 0, 0.2);
+  
 }
 .suggestions-list {
   box-sizing: border-box; /* same calculation for dropdown */
@@ -162,13 +173,12 @@ img.weather-icon {
   left: 0;
   right: 0;
   width: 100%;
-  border: 1px solid var(--text-color);
   border-top: none;
-  background-color: var(--light-bk-color);
+  background-color: var(--bk-color);
   color: var(--text-color);
-  border-radius: 0 0 4px 4px;
+  border-radius: 10px;
   padding: 0;
-  margin: 0;
+  margin: 10px 0;
   list-style: none;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
   z-index: 10;
@@ -177,9 +187,10 @@ img.weather-icon {
 .suggestion-item{
   padding: 8px;
   cursor: pointer;
-  border-bottom: 1px solid #ccc;
   color: var(--text-color);
-  background-color: var(--light-bk-color);
+  background-color: var(--bk-color);
+  border-radius: 10px;
+
 
 }
 .suggestion-item:hover{
@@ -219,11 +230,13 @@ img.weather-icon {
 .hourly-item{
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   padding: 0.5rem 0rem;
+  background-color: var(--light-bk-color);
+  border-radius: 30px;
+
 }
 .hourly-item:hover, .forecast-item:hover{
   background-color: var(--lila-accent);
   color: white;
-  border-radius: 8px;
   transform: translateY(-5px);
 }
 .forecast-item:hover .date-forecast {
@@ -375,10 +388,12 @@ img.weather-icon {
 
 .chart-container {
   width: 100%;
-  height: 300px;
+  height: 340px;
   margin: 2rem auto;
-  padding: 1rem;
+  padding: 1.5rem;
   box-sizing: border-box;
+  background-color: var(--card-bg);
+  border-radius: 15px;
 }
 
 .temp-value {
@@ -437,6 +452,83 @@ img.weather-icon {
   border-radius: 16px;
   color: var(--text-color);
 }
+.date-tab{
+  border-radius: 20px;
+  border:none;
+  color:var(--text-color);
+  background-color: transparent;
+}
+.active{
+  background-color: var(--orange-accent);
+}
+/*/*/
+
+/*/*/
+.custom-dropdown {
+  position: relative;
+  width: 200px;
+  align-self: flex-end;
+  margin-right:1rem;
+}
+
+.dropdown-button {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(0,0,0,0.2);
+  border: none;
+  background: var(--card-bg);
+  color: var(--text-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0; right: 0;
+  margin-top: 4px;
+  background: var(--light-bk-color);
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 20px;   /* ✅ rounded menu */
+  list-style: none;
+  padding: 0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+
+.dropdown-menu li {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 20px; /* optional: each item rounded */
+}
+.dropdown-menu li:hover {
+  background: var(--lila-accent);
+  color: white;
+}
+.dropdown-menu li.active {
+  background: var(--orange-accent);
+  color: white;
+
+}
+
+.temp-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--lila-accent); /* iOS blue */
+  
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  border: 2px solid white;
+}
+
 /***************************************/
 
 

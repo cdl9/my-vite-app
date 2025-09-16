@@ -6,7 +6,6 @@ function UnitToggle({ unit, setUnit }) {
     }
 
   return (
-    <div className="unit-toggle">   
       <div className="toggle-wrapper">
               <label className="toggle-label">
                   <span className="unit-label"  >°C</span>
@@ -19,7 +18,6 @@ function UnitToggle({ unit, setUnit }) {
                   <span className="unit-label">°F</span>         
               </label>
       </div>
-    </div>
   );
 }
 

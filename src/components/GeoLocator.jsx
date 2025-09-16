@@ -37,7 +37,7 @@ function GeoLocator({ onCoords, unit}) {
       
     } else {
       console.log("Geolocation not supported");
-      fallbackToDefaultCity();
+      //fallbackToDefaultCity();
     }
   }
 
@@ -49,7 +49,6 @@ function GeoLocator({ onCoords, unit}) {
       lon: position.coords.longitude,
     };
     setLocation({ latitude, longitude });
-    console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
     onCoords(coords);
 
   };
@@ -61,7 +60,6 @@ function GeoLocator({ onCoords, unit}) {
       .then(data => {
         setWeather(data);
         setLoading(false);
-        console.log(data);
 
       })
       .catch(error => {
