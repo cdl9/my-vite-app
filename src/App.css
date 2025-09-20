@@ -85,6 +85,11 @@ h3{
 input {
   font-size: 1rem;
 }
+input:focus {
+  outline: none;
+  box-shadow: 0 0 5px var(--lila-accent);
+  border-color: var(--lila-accent);
+}
 
 button {
   padding: 0.5rem 1rem;
@@ -99,8 +104,10 @@ button:hover {
 }
 .date-forecast {
   font-size: 1rem;
-  color: var(--lila-accent);
-  margin-top: 0.5rem;
+  color: var(--text-color);
+  font-weight: bold;
+  padding: 0 0.5rem;
+  margin-left: auto;
 }
 .date-selector {
   background-color: var(--card-bg);
@@ -139,6 +146,14 @@ img.weather-icon {
 .weather-icon {
   width: 80px;
   height: 80px;
+  object-fit: contain;
+  filter: none;
+  color: unset;
+  background-color: transparent;
+}
+.forecast-day-icon {
+  width: 60px;
+  height: 60px;
   object-fit: contain;
   filter: none;
   color: unset;
@@ -214,18 +229,6 @@ img.weather-icon {
   flex-direction: column;
   align-items: start;
 }
-.forecast, .hourly-items{
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  
-}
-.forecast-item {
-  padding: 0.5rem; 
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-}
 
 .hourly-item{
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -280,7 +283,7 @@ img.weather-icon {
 .weather-info {
   margin-top: 2rem;
 }
-.weather-card, .forecast-item, .hourly-items, .header-container, .modal-forecast{
+.weather-card, .forecast-item, .forecast, .hourly-items, .header-container, .modal-forecast{
   background-color: var(--card-bg);
   color: var(--text-color);
   padding: 1rem;
@@ -306,6 +309,30 @@ img.weather-icon {
   flex-direction: column;
   padding: 2rem 3rem 3rem;
   width:80%;
+}
+.forecast-item {
+  background-color: var(--light-bk-color);
+  padding: 0rem 0.5rem; 
+  margin:0.3rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 300px;
+
+}
+.forecast, .hourly-items{
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  
+}
+.forecast{
+  flex-direction: column;
+  align-items: center;
+  margin:0;
+  gap:0rem;
 }
 /*
 .modal-forecast:hover{
@@ -359,7 +386,7 @@ img.weather-icon {
 .toggle-label .slider {
   width: 50px;
   height: 26px;
-  background: var(--card-bg);
+  background: var(--light-bk-color);
   border-radius: 20px;
   position: relative;
   transition: background 0.3s;

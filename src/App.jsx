@@ -147,16 +147,16 @@ function App() {
       
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {weather && <WeatherCard weather={weather} unit={unit} cityLabel={cityLabel} />}
-      {forecast && <Forecast forecast={forecast} unit={unit} />}
+      {forecast && <Forecast forecast={forecast} unit={unit} darkMode={darkMode}/>}
 
-      {forecast&&
+      {/*forecast&&
         <WeatherMap
           lat={forecast.city.coord.lat}
           lon={forecast.city.coord.lon}
           city={forecast.city.name}
           temp={Math.round(forecast.list[0].main.temp)}
           unit={unit}
-        />}
+        />*/}
     </div>
 
     </div>

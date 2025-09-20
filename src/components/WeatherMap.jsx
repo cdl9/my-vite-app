@@ -3,10 +3,11 @@ import L from 'leaflet';
 import { useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 
-function WeatherMap({ lat, lon, city, temp, unit }) {
+function WeatherMap({ lat, lon, city, temp, unit, darkMode }) {
   if (!lat || !lon) return null;
 
   let color = "#4A90E2"; // default (blue)
+  let url_link="";
 
   console.log("unit", unit);
   if ((unit=="metric"&&temp >= 35)||(unit=="imperial"&&temp >= 95)) {
@@ -31,6 +32,13 @@ function WeatherMap({ lat, lon, city, temp, unit }) {
     }, [lat, lon, map]);
     return null;
   }
+
+  if(darkMode){
+    url_link="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+  }else{
+    url_link="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+  }
+
   return (
     <MapContainer
       center={[lat, lon]}
@@ -38,7 +46,7 @@ function WeatherMap({ lat, lon, city, temp, unit }) {
       style={{ height: "300px", width: "100%", borderRadius: "12px" }}
     >
       <TileLayer
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        url={url_link}
         attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
         subdomains={['a', 'b', 'c']}
         maxZoom={20}
