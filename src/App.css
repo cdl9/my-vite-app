@@ -285,6 +285,8 @@ img.weather-icon {
 }
 .weather-card, .forecast-item, .forecast, .hourly-items, .header-container, .modal-forecast{
   background-color: var(--card-bg);
+  backdrop-filter: blur(5px);
+
   color: var(--text-color);
   padding: 1rem;
   border-radius: 15px;
@@ -308,7 +310,7 @@ img.weather-icon {
   display: flex;
   flex-direction: column;
   padding: 2rem 3rem 3rem;
-  width:80%;
+  width:700px;
 }
 .forecast-item {
   background-color: var(--light-bk-color);

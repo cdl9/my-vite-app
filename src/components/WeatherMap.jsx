@@ -44,6 +44,7 @@ function WeatherMap({ lat, lon, city, temp, unit, darkMode }) {
       center={[lat, lon]}
       zoom={12}
       style={{ height: "300px", width: "100%", borderRadius: "12px" }}
+      scrollWheelZoom={false}
     >
       <TileLayer
         url={url_link}
