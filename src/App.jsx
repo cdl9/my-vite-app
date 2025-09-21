@@ -10,6 +10,7 @@ import { fetchWeather as fetchWeatherService, fetchForecastByCoords } from './se
 import Forecast from './components/Forecast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import WeatherMap from './components/WeatherMap';
+import SkeletonCard from './components/SkeletonCard';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -61,6 +62,7 @@ function App() {
 
   useEffect(() => {
   if (weather) {
+
     fetchWeather({
       lat: weather.coord?.lat,
       lon: weather.coord?.lon
@@ -77,6 +79,7 @@ function App() {
     }
 
     setLoading(true);
+    console.log("loading", loading);
     try {
       
       const weatherData = await fetchWeatherService({
@@ -124,11 +127,13 @@ function App() {
 
   return (
     
+
+    
     <div className={`app-container ${backgroundClass}`} style={{visibility: `${visibility}`}}> 
       
     <div className={`app ${darkMode ? 'dark' : 'light'} `}>
        
-      <div className='header-container'  style={{display:'flex', flexDirection:'row', alignContent:'center', alignItems:'center', justifyContent:'space-between'}}>
+      <div className='background-card'  style={{display:'flex', flexDirection:'row', alignContent:'center', alignItems:'center', justifyContent:'space-between'}}>
         <h2 style={{padding:'0px 20px'}}>WeatherApp</h2>
         <SearchBar
             city={city}
@@ -142,13 +147,28 @@ function App() {
         <UnitToggle unit={unit} setUnit={setUnit} />    
       </div>
 
+
+      
       {!weather && <GeoLocator onCoords={fetchWeather} unit={unit} setVisibility={setVisibility}/>}
 
       
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      {weather && <WeatherCard weather={weather} unit={unit} cityLabel={cityLabel} />}
-      {forecast && <Forecast forecast={forecast} unit={unit} darkMode={darkMode}/>}
 
+      {loading ? (
+        <>
+          <SkeletonCard />
+          <SkeletonCard />
+        </>
+      ) : (
+        <>
+          {weather && (
+            <WeatherCard weather={weather} unit={unit} cityLabel={cityLabel} />
+          )}
+          {forecast && (
+            <Forecast forecast={forecast} unit={unit} darkMode={darkMode} />
+          )}
+        </>
+      )}
       {/*forecast&&
         <WeatherMap
           lat={forecast.city.coord.lat}

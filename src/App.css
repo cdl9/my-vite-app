@@ -38,7 +38,7 @@ html:has(.app.dark) {
   background-color: transparent;
   --bk-color: #ffffff;
   --light-bk-color: #ffffff;
-  --text-color: #222;
+  --text-color: #474747;
   --card-bg: rgba(234, 234, 234, 0.8);
   --border-color: rgba(24, 24, 24, 0.2);
   --overlay-bg:rgba(0, 0, 0, 0.8)
@@ -110,9 +110,14 @@ button:hover {
   margin-left: auto;
 }
 .date-selector {
-  background-color: var(--card-bg);
+  //background-color: var(--card-bg);
   border-radius: 20px;
   padding: 0.2rem;
+  display: flex;
+  align-items: space-between;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 100%;
 }
 .feature-details {
   display: flex;
@@ -237,7 +242,7 @@ img.weather-icon {
   border-radius: 30px;
 
 }
-.hourly-item:hover, .forecast-item:hover{
+.hourly-item:hover, .forecast-item:hover, .small-card:hover {
   background-color: var(--lila-accent);
   color: white;
   transform: translateY(-5px);
@@ -268,10 +273,10 @@ img.weather-icon {
   font-size: 3rem;
   font-weight: bold;
   margin: 0;
-  background-image: linear-gradient(to right, #f3ec78, #af4261); /* Define your gradient */
+  background-color: var(--text-color);
+  //background-image: linear-gradient(to right, #f3ec78, #af4261); /* Define your gradient */
   background-clip: text; /* Clip the background to the text shape */
   -webkit-background-clip: text; /* For broader browser compatibility */
-  color: transparent; /* Make the text color transparent */
   -webkit-text-fill-color: transparent; /* For broader browser compatibility */
 }
 .toggle-button.selected {
@@ -283,9 +288,9 @@ img.weather-icon {
 .weather-info {
   margin-top: 2rem;
 }
-.weather-card, .forecast-item, .forecast, .hourly-items, .header-container, .modal-forecast{
+.forecast-item, .forecast, .hourly-items, .modal-forecast, .background-card {
   background-color: var(--card-bg);
-  backdrop-filter: blur(5px);
+ //backdrop-filter: blur(5px);
 
   color: var(--text-color);
   padding: 1rem;
@@ -293,7 +298,6 @@ img.weather-icon {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin: 1rem auto;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-
 }
 .weather-card,.modal-forecast{
   display: flex;
@@ -312,7 +316,17 @@ img.weather-icon {
   padding: 2rem 3rem 3rem;
   width:700px;
 }
-.forecast-item {
+.small-card{
+  background-color: var(--light-bk-color);
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  margin: 0.5rem auto;
+
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.forecast-item{
   background-color: var(--light-bk-color);
   padding: 0rem 0.5rem; 
   margin:0.3rem;
@@ -321,7 +335,21 @@ img.weather-icon {
   flex-direction: row;
   align-items: center;
   width: 300px;
-
+}
+.saved-cities{
+  height:38.5%;
+}
+.saved-city-item{
+  background-color: var(--light-bk-color);
+  padding: 0.5rem 1rem; 
+  margin:0.3rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100px;
 }
 .forecast, .hourly-items{
   display: flex;
@@ -336,6 +364,7 @@ img.weather-icon {
   margin:0;
   gap:0rem;
 }
+
 /*
 .modal-forecast:hover{
   background-color: var(--lila-accent);
@@ -418,7 +447,7 @@ img.weather-icon {
 .chart-container {
   width: 100%;
   height: 340px;
-  margin: 2rem auto;
+  margin: 0.5rem auto;
   padding: 1.5rem;
   box-sizing: border-box;
   background-color: var(--card-bg);
@@ -486,6 +515,7 @@ img.weather-icon {
   border:none;
   color:var(--text-color);
   background-color: transparent;
+  padding: 0.5rem 0.5rem;
 }
 .active{
   background-color: var(--orange-accent);
@@ -496,7 +526,7 @@ img.weather-icon {
 .custom-dropdown {
   position: relative;
   width: 200px;
-  align-self: flex-end;
+  //align-self: flex-end;
   margin-right:1rem;
 }
 

@@ -4,6 +4,7 @@ import ForecastModal from './ForecastModal';
 import HourlyTempChart from './HourlyTempChart';
 import { formatLocalDate, formatLocalHour, getLocalDateKey } from './utils/time';
 import WeatherMap from './WeatherMap';
+import SavedCities from './SavedCities';
 
 import { format, isToday, parse, parseISO } from 'date-fns';
 
@@ -84,7 +85,6 @@ function getLocalDateString(dt, timezoneOffset) {
   return (
     <div>
       <div className="hourly-forecast">
-          <h3>Hourly Forecast</h3>
           <div className="hourly-items">
             {hourlyForecast.map(item => (
               <ForecastHour 
@@ -96,7 +96,7 @@ function getLocalDateString(dt, timezoneOffset) {
             ))}
           </div>
       </div>
-      <div style={{display:'flex', flexDirection:'row', alignItems: 'flex-start', gap:'1rem'}}>
+      <div style={{display:'flex', flexDirection:'row', alignItems: '', gap:'1rem', width:'100%'}}>
         <div className="forecast">
           <h3>Daily Forecast</h3>
           {Object.entries(groupedByDate).map(([dateKey, items]) => {
@@ -112,14 +112,17 @@ function getLocalDateString(dt, timezoneOffset) {
             );
           })}
         </div>
-        <WeatherMap
-            lat={forecast.city.coord.lat}
-            lon={forecast.city.coord.lon}
-            city={forecast.city.name}
-            temp={Math.round(forecast.list[0].main.temp)}
-            unit={unit}
-            darkMode={darkMode}
-        />
+        <div style={{width:'100%'}}>
+          <WeatherMap
+              lat={forecast.city.coord.lat}
+              lon={forecast.city.coord.lon}
+              city={forecast.city.name}
+              temp={Math.round(forecast.list[0].main.temp)}
+              unit={unit}
+              darkMode={darkMode}
+          />
+          <SavedCities unit={unit} />
+        </div>
       </div>
 
       {selectedDate && (

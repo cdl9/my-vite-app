@@ -44,7 +44,7 @@ const WeatherCard = ({ weather, unit, cityLabel }) => {
   const sunriseTime = formatTime(weather.sys.sunrise);
   const sunsetTime = formatTime(weather.sys.sunset);
   return (
-    <div className="weather-card">
+    <div className="weather-card background-card">
       <div className="weather-header">
         <h2>{cityLabel}</h2>
         <p>{localDate}</p>
@@ -81,21 +81,21 @@ const WeatherCard = ({ weather, unit, cityLabel }) => {
 
 
       <div className="extra-details">
-        <div className="feature-text full-width"> 
+        <div className="feature-text full-width small-card"> 
             <div className='center-parent-flex'>
               <FontAwesomeIcon icon="droplet"/> 
               <p style={{ margin:'0.5rem'}}>Humidity</p>
             </div>
             <p>{weather.main.humidity}%</p>
         </div>
-        <div className="feature-text full-width"> 
+        <div className="feature-text full-width small-card"> 
             <div className='center-parent-flex'>
               <FontAwesomeIcon icon="wind"/> 
               <p style={{ margin:'0.5rem'}}>Wind</p>
             </div>
             <p> {weather.wind.speed}{unit === 'metric' ? 'm/s' : 'mph'}</p>
         </div>
-        <div className="feature-text full-width"> 
+        <div className="feature-text full-width small-card"> 
             <div className='center-parent-flex'>
               <FontAwesomeIcon icon="tachometer-alt"/> 
               <p style={{ margin:'0.5rem'}}>Pressure</p>
