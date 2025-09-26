@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, set } from 'date-fns';
 import HourlyTempChart from './HourlyTempChart';
 import { useEffect, useState, useRef } from 'react';
 import { addSeconds } from 'date-fns';
@@ -27,14 +27,17 @@ function ForecastModal({ onClose, unit, city, forecastType, groupedByDate, selec
 
   const [selectedChart, setSelectedChart] = useState("temp");
   const dates = Object.keys(groupedByDate);
-  console.log("dates", dates);
-  console.log("selectedDate", selectedDate);
   const dayData = groupedByDate[selectedDate] || [];
-  console.log("dayData", dayData);
 
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
   const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+  useEffect(() => {
+  if (forecastType !== "hour" && forecastType !== "day") {
+    setSelectedChart(forecastType);
+  }
+  }, [forecastType]);
 
   if (dayData.length === 0) {
   return (
@@ -113,15 +116,37 @@ const formattedDate = dayData.length > 0 ? formatLocalDate(dayData[0].dt, city.t
 
         
         {/* Dropdown selector */}
-      <div style={{display:'flex', width:'100%',  flexDirection:'row', alignContent:'center', alignItems:'center', justifyContent:'space-between'}}>
-        <div style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'center', gap:'0rem'}}>
-        <img
-                src={`https://openweathermap.org/img/wn/${dayData[0].weather[0].icon}@2x.png`}
-                alt="Weather icon"
-                className='hourly-weather-icon'
-
-          />
-        {selectedChart === "temp" && <p className='modal-details'>{Math.round(hourlyData[0].temp)}°{unit === 'metric' ? 'C' : 'F'}</p>}
+      <div className='flex-row' style={{ width:'100%', justifyContent:'space-between'}}>
+        <div className='flex-row'>
+          {selectedChart === "temp" &&
+            <div className='flex-row'>
+              <img
+                      src={`https://openweathermap.org/img/wn/${dayData[0].weather[0].icon}@2x.png`}
+                      alt="Weather icon"
+                      className='hourly-weather-icon'
+                />
+              <p className='modal-details'>{Math.round(hourlyData[0].temp)}°{unit === 'metric' ? 'C' : 'F'}</p>
+            </div>
+          }
+          {selectedChart === "humidity" && 
+            <div className='flex-row'>
+              <div className='hourly-weather-icon'><FontAwesomeIcon icon="droplet" className='small-weather-icon'/></div>
+              <p className='modal-details'>{hourlyData[0].humidity}%</p>
+            </div>
+          }
+          {selectedChart === "wind" && 
+            <div className='flex-row'>
+              <div className='hourly-weather-icon'><FontAwesomeIcon icon="wind" className='small-weather-icon'/></div>
+              <p className='modal-details'>{hourlyData[0].wind} {unit === 'metric' ? 'm/s' : 'mph'}</p>
+            </div>
+          }
+          {selectedChart === "rain" && 
+            <div className='flex-row'>
+              <div className='hourly-weather-icon'><FontAwesomeIcon icon="cloud-rain" className='small-weather-icon'/></div>
+              <p className='modal-details'>{hourlyData[0].rain}%</p>
+            </div>
+          }
+          
         </div>
         <div className="custom-dropdown" ref={dropdownRef}>
           

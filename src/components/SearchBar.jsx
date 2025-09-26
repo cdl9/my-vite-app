@@ -1,12 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { createPortal } from "react-dom";
 
-function SearchBar({ city, setCity, onSearch, onEnter, API_KEY, setCityLabel }) {
+
+function SearchBar({ city, setCity, onSearch, onEnter, API_KEY, setCityLabel, darkMode }) {
   const [suggestions, setSuggestions] = useState([]);
   const [typingTimeout, setTypingTimeout] = useState(null);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [tempInput, setTempInput] = useState(""); // for preview
   const wrapperRef = useRef(null);
+  
+  const [dropdownStyle, setDropdownStyle] = useState({});
+  const inputRef = useRef(null);
+
 
   // Fetch city suggestions
   const fetchSuggestions = async (query) => {
@@ -98,6 +104,21 @@ function SearchBar({ city, setCity, onSearch, onEnter, API_KEY, setCityLabel }) 
       setTempInput("");
     }
   };
+  useEffect(() => {
+  if (suggestions.length > 0 && inputRef.current) {
+    const rect = inputRef.current.getBoundingClientRect();
+    setDropdownStyle({
+      position: "absolute",
+      top: rect.bottom + window.scrollY+"px",
+      left: rect.left + window.scrollX+"px",
+      width: rect.width+"px",
+      //borderRadius: "10px",
+      boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+      zIndex: 9999
+    });
+  }
+}, [suggestions]);
+
 
   // Close suggestions on outside click
   useEffect(() => {
@@ -117,6 +138,9 @@ function SearchBar({ city, setCity, onSearch, onEnter, API_KEY, setCityLabel }) 
   // Clear on focus
   const handleFocus = () => {
     setSuggestions([]);
+    setTempInput("");
+    setCity("");
+
   };
 
   return (
@@ -139,9 +163,12 @@ function SearchBar({ city, setCity, onSearch, onEnter, API_KEY, setCityLabel }) 
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           className="input-city"
+          ref={inputRef}
         />
-        {suggestions.length > 0 && (
-          <ul className="suggestions-list">
+        {suggestions.length > 0 && 
+        createPortal
+        (
+          <ul style={dropdownStyle} className={`suggestions-list ${darkMode ? "dark" : "light"}`}>
             {suggestions.map((s, i) => (
               <li
                 key={i}
@@ -151,7 +178,8 @@ function SearchBar({ city, setCity, onSearch, onEnter, API_KEY, setCityLabel }) 
                 {s.name}, {s.country} {s.state ? `(${s.state})` : ""}
               </li>
             ))}
-          </ul>
+          </ul>,
+          document.body
         )}
         <button
           className="main-button"

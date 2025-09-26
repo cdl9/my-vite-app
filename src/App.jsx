@@ -11,10 +11,13 @@ import Forecast from './components/Forecast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import WeatherMap from './components/WeatherMap';
 import SkeletonCard from './components/SkeletonCard';
+import SavedCities from './components/SavedCities';
+
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
+import { set } from 'date-fns';
 
 const weatherBackgrounds = {
   Clear: 'bg-clear',
@@ -33,7 +36,6 @@ const weatherBackgrounds = {
   Squall: 'bg-squall',
   Tornado: 'bg-tornado'
 }
-
 
 
 // Add all solid and brand icons to the library
@@ -55,6 +57,28 @@ function App() {
   const [forecast, setForecast] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [backgroundClass, setBackgroundClass] =useState('bg-default');
+
+  const [triggerStat, setTriggerStat] = useState(null);
+
+  const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
+
+  const triggerToast = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 2000);
+  }
+
+  const [savedCities, setSavedCities] = useState(() => {
+    // load from localStorage on init
+    const stored = localStorage.getItem("savedCities");
+    return stored ? JSON.parse(stored) : [];
+  });
+  useEffect(() => {
+    localStorage.setItem("savedCities", JSON.stringify(savedCities));
+  }, [savedCities]);
 
   const toggleDarkMode = () => {
     setDarkMode(prev => !prev);
@@ -93,7 +117,9 @@ function App() {
       setWeather(weatherData);
       if(!weather&&!city)
         setCityLabel(`${weatherData.name}, ${weatherData.sys.country}`)
-      
+      console.log("cityLabel", cityLabel);
+      console.log("weatherData", weatherData);
+      console.log("weather", weather);
       const forecastData = await fetchForecastByCoords(
         coords?.lat || weatherData.coord?.lat,
         coords?.lon || weatherData.coord?.lon,
@@ -142,7 +168,8 @@ function App() {
             onEnter={handleKeyPress}
             setCityLabel={setCityLabel}
             API_KEY={API_KEY}
-          /> 
+            darkMode={darkMode}
+        />
         <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode}/>
         <UnitToggle unit={unit} setUnit={setUnit} />    
       </div>
@@ -154,29 +181,35 @@ function App() {
       
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {loading ? (
-        <>
-          <SkeletonCard />
-          <SkeletonCard />
-        </>
-      ) : (
-        <>
+      
           {weather && (
-            <WeatherCard weather={weather} unit={unit} cityLabel={cityLabel} />
+            <WeatherCard weather={weather} unit={unit} cityLabel={cityLabel} 
+              savedCities={savedCities}
+              setSavedCities={setSavedCities}
+              onStatClick={(metric)=>setTriggerStat(metric)}
+              triggerToast={triggerToast}
+            />
           )}
           {forecast && (
-            <Forecast forecast={forecast} unit={unit} darkMode={darkMode} />
+            <Forecast forecast={forecast} unit={unit} darkMode={darkMode} 
+              triggerStat={triggerStat}
+              setTriggerStat={setTriggerStat}
+              cityLabel={cityLabel}
+            />
           )}
-        </>
-      )}
-      {/*forecast&&
-        <WeatherMap
-          lat={forecast.city.coord.lat}
-          lon={forecast.city.coord.lon}
-          city={forecast.city.name}
-          temp={Math.round(forecast.list[0].main.temp)}
-          unit={unit}
-        />*/}
+          {<SavedCities savedCities={savedCities} setSavedCities={setSavedCities} unit={unit} 
+              onSelectCity={(cityObj) =>{
+                fetchWeather({ lat: cityObj.lat, lon: cityObj.lon }) ,
+                setCityLabel(cityObj.cityLabel)}
+              }
+              triggerToast={triggerToast}
+          />}
+          
+          {showToast && (
+            <div className="toast">
+              {toastMessage}
+            </div>
+          )}
     </div>
 
     </div>

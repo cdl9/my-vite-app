@@ -5,28 +5,42 @@ import HourlyTempChart from './HourlyTempChart';
 import { formatLocalDate, formatLocalHour, getLocalDateKey } from './utils/time';
 import WeatherMap from './WeatherMap';
 import SavedCities from './SavedCities';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { format, isToday, parse, parseISO } from 'date-fns';
 
-import { useState } from 'react';
+import {useEffect, useState } from 'react';
 
 
 
-function Forecast({ forecast, unit, darkMode}) {
+function Forecast({ forecast, unit, darkMode,triggerStat, setTriggerStat, cityLabel }) {
   if (!forecast || !forecast.list) return null;
 
   const hourlyForecast = forecast.list.slice(0, 6).map(item => ({
   ...item,
   localHour: formatLocalHour(item.dt, forecast.city.timezone)
 }));
-  console.log("hourlyForecast", hourlyForecast);
   
   const [selectedHour, setSelectedHour] = useState(null);
   const [typeForecast, setTypeForecast] = useState(null);
 
   const [selectedDate, setSelectedDate] = useState(null);
 
-  
+  useEffect(() => {
+    if (triggerStat) {
+      // today’s date
+      const todayKey = getLocalDateKey(
+        forecast.list[0].dt,
+        forecast.city.timezone
+      );
+
+      setSelectedDate(todayKey);
+      setTypeForecast(triggerStat);
+
+      document.body.style.overflow = "hidden";
+      setTriggerStat(null); // reset so it doesn’t reopen infinitely
+    }
+  }, [triggerStat, forecast, setTriggerStat]);
   //Hours for Graphic
   /*
   const hourlyData = forecast?.list?.slice(0, 8).map((item) => ({
@@ -81,6 +95,17 @@ function getLocalDateString(dt, timezoneOffset) {
     document.body.style.overflow = 'auto'; // re-enable scrolling
   };
 
+const [page, setPage] = useState(0); // 0 = first 3, 1 = last 3
+const itemsPerPage = 3;
+
+const forecastDates = Object.entries(groupedByDate);
+const totalPages = Math.ceil(forecastDates.length / itemsPerPage);
+
+const currentItems = forecastDates.slice(
+  page * itemsPerPage,
+  page * itemsPerPage + itemsPerPage
+);
+
 
   return (
     <div>
@@ -97,9 +122,30 @@ function getLocalDateString(dt, timezoneOffset) {
           </div>
       </div>
       <div style={{display:'flex', flexDirection:'row', alignItems: '', gap:'1rem', width:'100%'}}>
-        <div className="forecast">
-          <h3>Daily Forecast</h3>
-          {Object.entries(groupedByDate).map(([dateKey, items]) => {
+        <div className="forecast" >
+          
+          <div className="flex-row" style={{width:"100%", justifyContent:'space-between'}}>
+            <h4><FontAwesomeIcon icon="calendar-days" /> 6-DAY FORECAST</h4>
+            <div className="flex-row">
+              <button 
+                onClick={() => setPage(prev => Math.max(prev - 1, 0))} 
+                disabled={page === 0}
+                className='round-button'
+              >
+                <FontAwesomeIcon icon="arrow-left" />
+              </button>
+              <button 
+                onClick={() => setPage(prev => Math.min(prev + 1, totalPages - 1))} 
+                disabled={page === totalPages - 1}
+                style={{ marginLeft: "5px" }}
+                className='round-button'
+
+              >
+                <FontAwesomeIcon icon="arrow-right" />
+              </button>
+            </div>
+          </div>
+          {currentItems.map(([dateKey, items]) => {
             const firstItem = items[0]; // or maybe pick midday item for better icon
             return (
               <ForecastDay
@@ -111,12 +157,14 @@ function getLocalDateString(dt, timezoneOffset) {
               />
             );
           })}
+          
         </div>
         <div style={{width:'100%'}}>
           <WeatherMap
               lat={forecast.city.coord.lat}
               lon={forecast.city.coord.lon}
               city={forecast.city.name}
+              cityLabel={cityLabel}
               temp={Math.round(forecast.list[0].main.temp)}
               unit={unit}
               darkMode={darkMode}

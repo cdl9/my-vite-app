@@ -1,6 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { format, isToday, parse, parseISO } from 'date-fns';
+import WeatherIcon from './WeatherIcon';
 
+/*
+<div className='animated-icon'>
+  <WeatherIcon code={item.weather[0].icon} size={30} />
+</div>
+*/
 
 function ForecastDay({ label,item, unit, onClick }) {
   if (!item) return null;
@@ -13,6 +19,7 @@ function ForecastDay({ label,item, unit, onClick }) {
                       alt="Weather icon"
                       className='forecast-day-icon'
                   />
+                  
                   <p><FontAwesomeIcon icon="temperature-half" /> {Math.round(item.main.temp)}°{unit === 'metric' ? 'C' : 'F'}</p>
                   <p className="date-forecast"> {format(parseISO(label), "d MMM, EEE")}</p>
 
