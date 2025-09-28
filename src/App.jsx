@@ -12,7 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import WeatherMap from './components/WeatherMap';
 import SkeletonCard from './components/SkeletonCard';
 import SavedCities from './components/SavedCities';
-
+import Spinner from './components/spinner';
+import FadeInSection from './components/FadeInSection';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -94,6 +95,18 @@ function App() {
   }
   }, [unit]);
   
+  useEffect(() => {
+  // try geolocation on mount
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      fetchWeather({ lat: pos.coords.latitude, lon: pos.coords.longitude });
+    },
+    () => {
+      // fallback to default city if geolocation blocked
+      fetchWeather({ city: "New York" });
+    }
+  );
+}, []);
 
   const fetchWeather = async (coords) => {
     if (!city && !coords) {
@@ -117,9 +130,7 @@ function App() {
       setWeather(weatherData);
       if(!weather&&!city)
         setCityLabel(`${weatherData.name}, ${weatherData.sys.country}`)
-      console.log("cityLabel", cityLabel);
-      console.log("weatherData", weatherData);
-      console.log("weather", weather);
+
       const forecastData = await fetchForecastByCoords(
         coords?.lat || weatherData.coord?.lat,
         coords?.lon || weatherData.coord?.lon,
@@ -132,7 +143,6 @@ function App() {
       const weatherType = weatherData?.weather?.[0]?.main;
       const backgroundClass = weatherBackgrounds[weatherType] || 'bg-default';
       setBackgroundClass(backgroundClass); // 👈 use a new state for this
-      setVisibility('visible');
       //setWeather(data);
       setError('');
     } catch (err) {
@@ -140,7 +150,11 @@ function App() {
       setWeather(null);
       setForecast(null);
     }
-    setLoading(false);
+    finally{
+    setTimeout(() => setLoading(false), 300); // 300ms minimum spinner time
+    setVisibility('visible');
+    
+    }
   };
 
   
@@ -150,66 +164,79 @@ function App() {
     if (e.key === 'Enter') fetchWeather();
   };
 
-
+//${backgroundClass}
   return (
     
 
     
-    <div className={`app-container ${backgroundClass}`} style={{visibility: `${visibility}`}}> 
+    <div className={`app-container ${backgroundClass}`}> 
       
     <div className={`app ${darkMode ? 'dark' : 'light'} `}>
-       
-      <div className='background-card'  style={{display:'flex', flexDirection:'row', alignContent:'center', alignItems:'center', justifyContent:'space-between'}}>
-        <h2 style={{padding:'0px 20px'}}>WeatherApp</h2>
-        <SearchBar
-            city={city}
-            setCity={setCity}
-            onSearch={fetchWeather}
-            onEnter={handleKeyPress}
-            setCityLabel={setCityLabel}
-            API_KEY={API_KEY}
-            darkMode={darkMode}
-        />
-        <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode}/>
-        <UnitToggle unit={unit} setUnit={setUnit} />    
-      </div>
+      {loading ? (
+        <div className="loading-screen">
+          <Spinner />
+        </div>
+      ) : (
+        <>
+        <div className='background-card'  style={{display:'flex', flexDirection:'row', alignContent:'center', alignItems:'center', justifyContent:'space-between'}} >
+          <h2 style={{padding:'0px 20px'}}>WeatherApp</h2>
+          <SearchBar
+              city={city}
+              setCity={setCity}
+              onSearch={fetchWeather}
+              onEnter={handleKeyPress}
+              setCityLabel={setCityLabel}
+              API_KEY={API_KEY}
+              darkMode={darkMode}
+          />
+          <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode}/>
+          <UnitToggle unit={unit} setUnit={setUnit} />    
+        </div>
 
+        <FadeInSection>
+        {!weather && <GeoLocator onCoords={fetchWeather} unit={unit}/>}
+        </FadeInSection>
+        
+        {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      
-      {!weather && <GeoLocator onCoords={fetchWeather} unit={unit} setVisibility={setVisibility}/>}
+        <FadeInSection delay={0.2}>
+        {weather && (
+          <WeatherCard weather={weather} unit={unit} cityLabel={cityLabel} 
+            savedCities={savedCities}
+            setSavedCities={setSavedCities}
+            onStatClick={(metric)=>setTriggerStat(metric)}
+            triggerToast={triggerToast}
+          />
+        )}
+        </FadeInSection>
 
-      
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+        <FadeInSection delay={0.4}>
+        {forecast && (
+          <Forecast forecast={forecast} unit={unit} darkMode={darkMode} 
+            triggerStat={triggerStat}
+            setTriggerStat={setTriggerStat}
+            cityLabel={cityLabel}
+          />
+        )}
+        </FadeInSection>
 
-      
-          {weather && (
-            <WeatherCard weather={weather} unit={unit} cityLabel={cityLabel} 
-              savedCities={savedCities}
-              setSavedCities={setSavedCities}
-              onStatClick={(metric)=>setTriggerStat(metric)}
-              triggerToast={triggerToast}
-            />
-          )}
-          {forecast && (
-            <Forecast forecast={forecast} unit={unit} darkMode={darkMode} 
-              triggerStat={triggerStat}
-              setTriggerStat={setTriggerStat}
-              cityLabel={cityLabel}
-            />
-          )}
-          {<SavedCities savedCities={savedCities} setSavedCities={setSavedCities} unit={unit} 
-              onSelectCity={(cityObj) =>{
-                fetchWeather({ lat: cityObj.lat, lon: cityObj.lon }) ,
-                setCityLabel(cityObj.cityLabel)}
-              }
-              triggerToast={triggerToast}
-          />}
-          
-          {showToast && (
-            <div className="toast">
-              {toastMessage}
-            </div>
-          )}
+        <FadeInSection delay={0.6}>
+        {<SavedCities savedCities={savedCities} setSavedCities={setSavedCities} unit={unit} 
+            onSelectCity={(cityObj) =>{
+              fetchWeather({ lat: cityObj.lat, lon: cityObj.lon }) ,
+              setCityLabel(cityObj.cityLabel)}
+            }
+            triggerToast={triggerToast}
+        />}
+        </FadeInSection>    
+
+        {showToast && (
+          <div className="toast">
+            {toastMessage}
+          </div>
+        )}
+        </>
+      )}
     </div>
 
     </div>

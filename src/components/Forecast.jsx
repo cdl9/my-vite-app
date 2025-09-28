@@ -130,7 +130,7 @@ const currentItems = forecastDates.slice(
               <button 
                 onClick={() => setPage(prev => Math.max(prev - 1, 0))} 
                 disabled={page === 0}
-                className='round-button'
+                className='square-button'
               >
                 <FontAwesomeIcon icon="arrow-left" />
               </button>
@@ -138,7 +138,7 @@ const currentItems = forecastDates.slice(
                 onClick={() => setPage(prev => Math.min(prev + 1, totalPages - 1))} 
                 disabled={page === totalPages - 1}
                 style={{ marginLeft: "5px" }}
-                className='round-button'
+                className='square-button'
 
               >
                 <FontAwesomeIcon icon="arrow-right" />

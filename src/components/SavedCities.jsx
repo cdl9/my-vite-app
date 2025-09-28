@@ -24,7 +24,6 @@ function SavedCities({savedCities, setSavedCities, unit, onSelectCity, triggerTo
                 if (!nodeRefs.current[city.name]) {
                     nodeRefs.current[city.name] = createRef(); // 👈 stable ref for each city
                 }
-                console.log("icon code", city.icon);
                 return (
                     <CSSTransition
                         key={city.name}

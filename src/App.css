@@ -1,5 +1,5 @@
 :root{
-  --lila-accent: #655fe3;
+  --lila-accent: #748cf1;
   --orange-accent: #FF9500;
 ; 
 }
@@ -19,7 +19,7 @@ body {
   background-color: var(--bk-color);
 }
 html:has(.app.light) {
-  background-color: #f5f5f5;
+  background-color: #ffffff;
 }
 
 html:has(.app.dark) {
@@ -38,8 +38,9 @@ html:has(.app.dark) {
   background-color: transparent;
   --bk-color: #ffffff;
   --light-bk-color: #ffffff;
-  --text-color: #474747;
-  --card-bg: rgba(234, 234, 234, 0.8);
+  --slider-color: #c2ceff;
+  --text-color: #3e3b51;
+  --card-bg: rgba(234,234,234,0.8);
   --border-color: rgba(24, 24, 24, 0.2);
   --overlay-bg:rgba(0, 0, 0, 0.8)
 }
@@ -92,7 +93,16 @@ h3{
 }
 .round-button:hover{
   background-color: var(--orange-accent);
-  
+}
+.square-button{
+  border-radius: 5px;
+  border: rgb(180, 180, 180) 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--light-bk-color);
+  color: var(--text-color);
+  padding: 0.5rem 0.4rem;
 }
 .bookmark-button{
   border-radius: 15px;
@@ -219,7 +229,7 @@ img.weather-icon {
   padding: 0.5rem 1rem;
   font-size: 1rem;
   border: none;
-  background-color: var(--bk-color);
+  background-color: var(--light-bk-color);
   color: var(--text-color);
   border-radius: 20px;
   width: 100%;
@@ -711,6 +721,30 @@ img.weather-icon {
   padding: 8px 12px;
   font-weight: 500;
 }
+
+.spinner {
+  border: 6px solid #f3f3f3; /* light grey */
+  border-top: 6px solid var(--lila-accent); /* blue */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 50px auto; /* center horizontally */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* full screen */
+  background: var(--background); /* match dark/light */
+}
 /***************************************/
 
 
@@ -796,7 +830,7 @@ img.weather-icon {
   background-size: cover;
 }
 .bg-default {
-  background: linear-gradient(to top, #bdc3c7, #2c3e50); /* fallback */
+  
 }
 
 /* Optional: add transitions */

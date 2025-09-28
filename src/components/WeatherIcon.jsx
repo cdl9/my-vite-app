@@ -1,12 +1,12 @@
 import ReactAnimatedWeather from "react-animated-weather";
 import iconMap from "./iconMap";
 
-function WeatherIcon({ code, size}) {
+function WeatherIcon({ code, size, isHovered }) {
   const icon = iconMap[code] || "CLOUDY"; // fallback
   return (
     <ReactAnimatedWeather
       icon={icon}
-      color="goldenrod"
+      color={isHovered ? "white": "goldenrod"}
       size={size}
       animate={true}
     />
