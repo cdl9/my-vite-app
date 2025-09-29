@@ -3,10 +3,12 @@ import { format, parseISO, set } from 'date-fns';
 import HourlyTempChart from './HourlyTempChart';
 import { useEffect, useState, useRef } from 'react';
 import { addSeconds } from 'date-fns';
+import WeatherIcon from './WeatherIcon';
+
 
 import { formatLocalHour, formatLocalDate } from './utils/time';
 
-const chartOptions = [ { value: "temp", label: <div><FontAwesomeIcon icon="temperature-half" />Temp</div>}, { value: "humidity", label: <div><FontAwesomeIcon icon="droplet" />Humidity</div>}, { value: "wind", label: <div><FontAwesomeIcon icon="wind" />Wind</div>}, { value: "rain", label: <div><FontAwesomeIcon icon="cloud-rain" />Rain</div> } ];
+const chartOptions = [ { value: "temp", label: <div><FontAwesomeIcon icon="temperature-half" />Temp</div>}, { value: "humidity", label: <div><FontAwesomeIcon icon="droplet" /> Humidity</div>}, { value: "wind", label: <div><FontAwesomeIcon icon="wind" /> Wind</div>}, { value: "rain", label: <div ><FontAwesomeIcon icon="cloud-rain" /> Rain</div> } ];
 
 /*
 const chartOptions = [
@@ -104,7 +106,7 @@ const formattedDate = dayData.length > 0 ? formatLocalDate(dayData[0].dt, city.t
                 className={date === selectedDate ? "active date-tab" : "date-tab"}
                 onClick={() => setSelectedDate(date)}
               >
-                {format(parseISO(date), "d")}
+                {format(parseISO(date), "dd")}
               </button>
             </div>
           )}
@@ -125,7 +127,9 @@ const formattedDate = dayData.length > 0 ? formatLocalDate(dayData[0].dt, city.t
                       alt="Weather icon"
                       className='hourly-weather-icon'
                 />
+                
               <p className='modal-details'>{Math.round(hourlyData[0].temp)}°{unit === 'metric' ? 'C' : 'F'}</p>
+
             </div>
           }
           {selectedChart === "humidity" && 
